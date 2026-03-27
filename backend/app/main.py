@@ -50,6 +50,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Health check — must be defined before the SPA catch-all
+@app.get("/api/health")
+def health_check():
+    """Health check endpoint."""
+    return {"status": "healthy", "app": settings.APP_NAME, "version": settings.APP_VERSION}
+
 # API routes
 app.include_router(watchlist.router)
 app.include_router(search.router)
@@ -68,9 +74,3 @@ if static_dir.exists():
         if file_path.exists() and file_path.is_file():
             return FileResponse(file_path)
         return FileResponse(static_dir / "index.html")
-
-
-@app.get("/api/health")
-def health_check():
-    """Health check endpoint."""
-    return {"status": "healthy", "app": settings.APP_NAME, "version": settings.APP_VERSION}
