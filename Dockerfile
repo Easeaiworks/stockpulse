@@ -10,6 +10,15 @@ RUN npm run build
 FROM python:3.11-slim
 WORKDIR /app
 
+# Install build dependencies needed by some Python packages (lxml, etc.)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    g++ \
+    libxml2-dev \
+    libxslt1-dev \
+    libffi-dev \
+    && rm -rf /var/lib/apt/lists/*
+
 # Install Python dependencies
 COPY backend/requirements.txt ./requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
